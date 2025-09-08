@@ -1,0 +1,48 @@
+; Run parameters
+define              = -DPOSRES_A -DPOSRES_B      ; position restrain the cnt
+integrator          = md   ; leap-frog integrator
+dt                  = 0.001    ; 1 fs
+nsteps              = 1000000  ; 1 ns
+;
+; output control
+nstxout            = 100000  ; save coordinates every 100.0 ps
+nstvout            = 100000  ; save velocities every 100.0 ps
+nstfout            = 100000  ; save energies every 100.0 ps
+nstenergy          = 100000  ; update log file every 100.0 ps
+; Bond parameters
+continuation            = yes       ; no it is continuing from previous run
+constraint_algorithm    = lincs     ; holonomic constraints
+constraints             = h-bonds   ; bonds involving H and heavy atoms are constrained recommended setting for OPLS, AMBER
+lincs_iter              = 1         ; accuracy of LINCS
+lincs_order             = 4         ; also related to accuracy
+; Nonbonded settings
+cutoff-scheme   = Verlet
+vdw-type        = Cut-off                ; ! new addition
+vdw-modifier    = Force-switch           ; ! new addition
+rvdw-switch     = 1.2                    ; ! new addition
+nstlist         = 20                     ; 20 fs, largely irrelevant with Verlet 10 x 0.002
+ns_type         = grid                   ; search neighboring grid cells
+rlist           = 1.6                    ; recommended for ILs
+rvdw            = 1.6                    ; recommended for ILs
+; PME electrostatics parameters
+coulombtype     = cutoff
+rcoulomb        = 1.6
+;
+Tcoupl             = v-rescale           ; deterministic thermostat (velocity rescaling)
+tc_grps            = System
+tau_t              = 0.5                  ; time constant in ps
+ref_t              = 350.0
+;ld-seed            = 50316080           ; used for stochastic thermostat as sd, bd, and langevin
+;
+annealing = single
+annealing_npoints = 6
+annealing_time = 0   200 400  600  800 1000
+annealing_temp = 300 350 400  350  350  350
+; generate velocity of
+;gen_vel           = no
+; PBC
+pbc               = xyz
+;
+nstcomm           = 1
+comm-mode         = linear
+comm-grps         = System
