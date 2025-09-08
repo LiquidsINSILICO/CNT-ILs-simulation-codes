@@ -1,0 +1,43 @@
+title           = OPLS vaccum NVT equilibration
+define          = -DPOSRES_A -DPOSRES_B      ; position restrain the cnt
+; Run parameters
+integrator      = md            ; leap-frog integrator
+nsteps          = 1000000       ; 1 * 1000000 = 1 ns
+dt              = 0.001         ; 1 fs
+; Output control
+nstxout         = 100000           ; save coordinates every 100.0 ps
+nstvout         = 100000           ; save velocities every 100.0 ps
+nstenergy       = 100000           ; save energies every 100.0 ps
+nstlog          = 100000           ; update log file every 100.0 ps
+; Bond parameters
+continuation            = yes       ; continutaion
+constraint_algorithm    = lincs     ; holonomic constraints
+constraints             = h-bonds   ; bonds involving H and heavy atoms are constrained recommended setting for OPLS, AMBER
+lincs_iter              = 1         ; accuracy of LINCS
+lincs_order             = 4         ; also related to accuracy
+
+; Nonbonded settings
+cutoff-scheme   = Verlet
+vdw-type        = Cut-off                ; ! new addition
+vdw-modifier    = Force-switch           ; ! new addition
+rvdw-switch     = 1.2                    ; ! new addition
+nstlist         = 20                     ; 20 fs, largely irrelevant with Verlet 10 x 0.002
+ns_type         = grid                   ; search neighboring grid cells
+rlist           = 1.6                    ; recommended for ILs
+rvdw            = 1.6                    ; recommended for ILs
+;
+; PME electrostatics parameters
+coulombtype     = cutoff
+rcoulomb        = 1.6
+;
+; Temperature coupling is on
+tcoupl                  = V-rescale             ; modified Berendsen thermostat
+tc-grps                 = System        ; two coupling groups - more accurate
+tau_t                   = 0.5           ; time constant, in ps
+ref_t                   = 350           ; reference temperature, one for each group, in K
+; Pressure coupling is off
+pcoupl                  = no        ; no pressure coupling in NVT
+; Periodic boundary conditions
+pbc                     = xyz     ; 3-D PBC
+; Velocity generation
+gen_vel                 = no       ; assign velocities from Maxwell distribution
